@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Restoran.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Restoran.Models;
 
 namespace Restoran
 {
@@ -43,6 +44,9 @@ namespace Restoran
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddDbContext<RestoranContext>(options =>
+                options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
