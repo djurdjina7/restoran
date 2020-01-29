@@ -26,16 +26,44 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="dropdown">
+                                <div class="navbar-form">
+                                    <div class="btn-group">
+                                        <a class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" href="#">Administracija<span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Drzava" asp-action="Index">Država</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Grad" asp-action="Index">Grad</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Sto" asp-action="Index">Sto</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Zaposleni" asp-action="Index">Zaposleni</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Tipmenija" asp-action="Index">Tip menija</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Meni" asp-action="Index">Meni</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Rezervacija" asp-action="Index">Rezervacija</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                 </div>
             </div>
         </nav>
