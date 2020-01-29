@@ -47,7 +47,7 @@ namespace Restoran.Controllers
         // GET: Meni/Create
         public IActionResult Create()
         {
-            ViewData["TipMenijaId"] = new SelectList(_context.Tipmenija, "Id", "Id");
+            ViewData["TipMenijaId"] = new SelectList(_context.Tipmenija, "Id", "Naziv");
             return View();
         }
 
