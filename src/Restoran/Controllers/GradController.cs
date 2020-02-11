@@ -18,14 +18,12 @@ namespace Restoran.Controllers
             _context = context;
         }
 
-        // GET: Grad
         public async Task<IActionResult> Index()
         {
             var restoranContext = _context.Grad.Include(g => g.Drzava);
             return View(await restoranContext.ToListAsync());
         }
 
-        // GET: Grad/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,16 +42,12 @@ namespace Restoran.Controllers
             return View(grad);
         }
 
-        // GET: Grad/Create
         public IActionResult Create()
         {
             ViewData["DrzavaId"] = new SelectList(_context.Drzava, "Id", "Naziv");
             return View();
         }
 
-        // POST: Grad/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DrzavaId,Naziv,PostanskiBroj")] Grad grad)
@@ -68,7 +62,6 @@ namespace Restoran.Controllers
             return View(grad);
         }
 
-        // GET: Grad/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,9 +78,6 @@ namespace Restoran.Controllers
             return View(grad);
         }
 
-        // POST: Grad/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,DrzavaId,Naziv,PostanskiBroj")] Grad grad)
@@ -121,7 +111,6 @@ namespace Restoran.Controllers
             return View(grad);
         }
 
-        // GET: Grad/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +129,6 @@ namespace Restoran.Controllers
             return View(grad);
         }
 
-        // POST: Grad/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
