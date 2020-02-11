@@ -1,55 +1,56 @@
 ﻿@model Restoran.Models.Rezervacija
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Kreiraj";
 }
 
-<h1>Create</h1>
-
-<h4>Rezervacija</h4>
+<h2>Kreiraj novu rezervaciju</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="StoId" class="control-label"></label>
-                <select asp-for="StoId" class ="form-control" asp-items="ViewBag.StoId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="PodaciGosta" class="control-label"></label>
-                <input asp-for="PodaciGosta" class="form-control" />
+                <label asp-for="PodaciGosta" class="control-label">Unesi podatke o rezervaciji</label>
+                <textarea asp-for="PodaciGosta"  class="form-control" > </textarea>
                 <span asp-validation-for="PodaciGosta" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Datum" class="control-label"></label>
-                <input asp-for="Datum" class="form-control" />
-                <span asp-validation-for="Datum" class="text-danger"></span>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="StoId" class="control-label">Odaberi dostupan sto</label>
+                        <select asp-for="StoId" class="form-control" asp-items="ViewBag.StoId"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="VrijemeOd" class="control-label">Vrijeme rezervacije</label>
+                        <input asp-for="VrijemeOd" class="form-control" />
+                        <span asp-validation-for="VrijemeOd" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="BrojOsoba" class="control-label">Broj osoba</label>
+                        <input asp-for="BrojOsoba" class="form-control" />
+                        <span asp-validation-for="BrojOsoba" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Datum" class="control-label">Odaberi datum za rezervaciju</label>
+                        <input asp-for="Datum" class="form-control" />
+                        <span asp-validation-for="Datum" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="VrijemeDo" class="control-label">Do koliko sati važi rezervacija</label>
+                        <input asp-for="VrijemeDo" class="form-control" />
+                        <span asp-validation-for="VrijemeDo" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="VrijemeOd" class="control-label"></label>
-                <input asp-for="VrijemeOd" class="form-control" />
-                <span asp-validation-for="VrijemeOd" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="VrijemeDo" class="control-label"></label>
-                <input asp-for="VrijemeDo" class="form-control" />
-                <span asp-validation-for="VrijemeDo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BrojOsoba" class="control-label"></label>
-                <input asp-for="BrojOsoba" class="form-control" />
-                <span asp-validation-for="BrojOsoba" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Kreiraj rezervaciju" class="btn btn-primary" />
+                <a class="btn btn-outline-danger" asp-action="Index">Odustani</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

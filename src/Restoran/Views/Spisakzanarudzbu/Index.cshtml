@@ -1,52 +1,49 @@
 ﻿@model IEnumerable<Restoran.Models.Spisakzanarudzbu>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pregled narudžbe";
 }
 
-<h1>Index</h1>
+<h4>Pregled narudžbe <em>ID: @ViewBag.NarudzbaId</em> kreirane: <em>@ViewBag.Datum</em></h4>
+<br />
 
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Meni)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Kolicina)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Cijena)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Meni)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Narudzba)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Meni.Naziv)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Kolicina)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Cijena)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Meni.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Narudzba.Id)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
         </tr>
 }
     </tbody>
 </table>
+<div class="row align-items-center">
+    <div class="col-8">
+        <a class="btn btn-outline-info" asp-action="Index" asp-controller="Narudzba">Nazad</a>
+    </div>
+    <div class="col-4">
+        <a style="font-size: 1.25rem; color: #9c27b0;"><strong>Ukupno: </strong> @ViewBag.Cijena KM</a>
+    </div>
+</div>
 
-<a class="btn btn-outline-primary" href="@Url.Action("Create","Spisakzanarudzbu", new { narudzbaId = ViewBag.NarudzbaId })">Dodaj</a>

@@ -1,0 +1,30 @@
+﻿@model Restoran.Models.Sto
+
+@{
+    ViewData["Title"] = "Oslobodi zauzet stol";
+}
+
+<h4>Oslobodi zauzet stol</h4>
+<hr />
+@if (ViewBag.BrojZauzetihStolova > 0)
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Reserve">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Id" class="control-label">Lista zauzetih stolova</label>
+                    <select asp-for="Id" class="form-control" asp-items="ViewBag.StoId"></select>
+                    <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Oslobodi sto" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <p>Svi stolovi su slobodni.</p>
+}

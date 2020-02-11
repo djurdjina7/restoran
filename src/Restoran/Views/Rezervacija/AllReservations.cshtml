@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
-<h1>Pregled važećih rezervacija  <a class="btn btn-sm btn-outline-success" asp-action="AllReservations">Sve rezervacije</a></h1>
+<h1>Pregled svih rezervacija <a class="btn btn-sm btn-outline-success" asp-action="Index">Važeće rezervacije</a></h1>
 
 <p>
     <a class="btn btn-primary" asp-action="Create">Kreiraj novu rezervaciju</a>
@@ -57,7 +57,6 @@
                             @Html.DisplayFor(modelItem => item.Sto.BrojStola)
                         </td>
                         <td>
-                            <a href="@Url.Action("Edit", "Rezervacija", new { id = item.Id, stariStoId = item.Sto.Id })">Izmjeni</a> |
                             <a asp-action="Details" asp-route-id="@item.Id">Detalji</a> |
                             <a asp-action="Delete" asp-route-id="@item.Id">Obriši</a>
                         </td>

@@ -12,7 +12,7 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ZaposleniId" class="control-label">Zaposleni</label>
+                <label asp-for="ZaposleniId" class="control-label">Radnik</label>
                 <select asp-for="ZaposleniId" class ="form-control" asp-items="ViewBag.ZaposleniId"></select>
             </div>
             <div class="form-group">
@@ -20,15 +20,13 @@
                 <select asp-for="StoId" class ="form-control" asp-items="ViewBag.StoId"></select>
             </div>
             <div class="form-group">
+                <a class="btn btn-outline-danger" asp-action="Index">Odustani</a>
                 <input type="submit" value="Kreiraj" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Odustani</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
