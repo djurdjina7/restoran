@@ -25,7 +25,6 @@ namespace Restoran.Models
         public virtual DbSet<Tipmenija> Tipmenija { get; set; }
         public virtual DbSet<Zaposleni> Zaposleni { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
@@ -38,7 +37,8 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Naziv)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
             });
 
             modelBuilder.Entity<Grad>(entity =>
@@ -56,11 +56,13 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Naziv)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.PostanskiBroj)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.HasOne(d => d.Drzava)
                     .WithMany(p => p.Grad)
@@ -78,13 +80,18 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Id).HasColumnType("int(11)");
 
-                entity.Property(e => e.Cijena).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.Cijena)
+                    .HasColumnType("decimal(10,2)")
+                    .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Kolicina).HasColumnType("int(11)");
+                entity.Property(e => e.Kolicina)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Naziv)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.TipMenijaId)
                     .HasColumnName("TipMenija_Id")
@@ -109,11 +116,17 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Id).HasColumnType("int(11)");
 
-                entity.Property(e => e.Cijena).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.Cijena)
+                    .HasColumnType("decimal(10,2)")
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.StoId)
                     .HasColumnName("Sto_Id")
                     .HasColumnType("int(11)");
+
+                entity.Property(e => e.VrijemeKreiranja).HasDefaultValueSql("NULL");
+
+                entity.Property(e => e.VrijemeZavrsetka).HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.ZaposleniId)
                     .HasColumnName("Zaposleni_Id")
@@ -141,17 +154,24 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Id).HasColumnType("int(11)");
 
-                entity.Property(e => e.BrojOsoba).HasColumnType("int(11)");
+                entity.Property(e => e.BrojOsoba)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Datum).HasColumnType("date");
+                entity.Property(e => e.Datum).HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.PodaciGosta)
                     .HasMaxLength(256)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.StoId)
                     .HasColumnName("Sto_Id")
                     .HasColumnType("int(11)");
+
+                entity.Property(e => e.VrijemeDo).HasDefaultValueSql("NULL");
+
+                entity.Property(e => e.VrijemeOd).HasDefaultValueSql("NULL");
 
                 entity.HasOne(d => d.Sto)
                     .WithMany(p => p.Rezervacija)
@@ -162,7 +182,7 @@ namespace Restoran.Models
 
             modelBuilder.Entity<Spisakzanarudzbu>(entity =>
             {
-                entity.HasKey(e => new { e.MeniId, e.NarudzbaId });
+                entity.HasKey(e => new { e.NarudzbaId, e.MeniId });
 
                 entity.ToTable("spisakzanarudzbu", "restoran");
 
@@ -172,17 +192,21 @@ namespace Restoran.Models
                 entity.HasIndex(e => e.NarudzbaId)
                     .HasName("fk_Meni_has_Narudzba_Narudzba1_idx");
 
-                entity.Property(e => e.MeniId)
-                    .HasColumnName("Meni_Id")
-                    .HasColumnType("int(11)");
-
                 entity.Property(e => e.NarudzbaId)
                     .HasColumnName("Narudzba_Id")
                     .HasColumnType("int(11)");
 
-                entity.Property(e => e.Cijena).HasColumnType("decimal(10,2)");
+                entity.Property(e => e.MeniId)
+                    .HasColumnName("Meni_Id")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.Kolicina).HasColumnType("int(11)");
+                entity.Property(e => e.Cijena)
+                    .HasColumnType("decimal(10,2)")
+                    .HasDefaultValueSql("NULL");
+
+                entity.Property(e => e.Kolicina)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("NULL");
 
                 entity.HasOne(d => d.Meni)
                     .WithMany(p => p.Spisakzanarudzbu)
@@ -203,11 +227,17 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Id).HasColumnType("int(11)");
 
-                entity.Property(e => e.BrojMjesta).HasColumnType("int(11)");
+                entity.Property(e => e.BrojMjesta)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.BrojStola).HasColumnType("int(11)");
+                entity.Property(e => e.BrojStola)
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Dostupan).HasColumnType("bit(1)");
+                entity.Property(e => e.Dostupan)
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("NULL");
             });
 
             modelBuilder.Entity<Tipmenija>(entity =>
@@ -218,7 +248,8 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Naziv)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
             });
 
             modelBuilder.Entity<Zaposleni>(entity =>
@@ -236,11 +267,13 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Adresa)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.BrojTelefona)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.GradId)
                     .HasColumnName("Grad_Id")
@@ -248,15 +281,18 @@ namespace Restoran.Models
 
                 entity.Property(e => e.Ime)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.MaticniBroj)
                     .HasMaxLength(13)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.Property(e => e.Prezime)
                     .HasMaxLength(45)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("NULL");
 
                 entity.HasOne(d => d.Grad)
                     .WithMany(p => p.Zaposleni)

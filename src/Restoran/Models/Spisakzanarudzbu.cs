@@ -5,8 +5,8 @@ namespace Restoran.Models
 {
     public partial class Spisakzanarudzbu
     {
-        public int MeniId { get; set; }
         public int NarudzbaId { get; set; }
+        public int MeniId { get; set; }
         public int? Kolicina { get; set; }
         public decimal? Cijena { get; set; }
 
