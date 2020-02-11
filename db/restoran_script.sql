@@ -11,7 +11,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema restoran
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `restoran` DEFAULT CHARACTER SET latin1 ;
+CREATE SCHEMA IF NOT EXISTS `restoran` DEFAULT CHARACTER SET utf8mb4 ;
 USE `restoran` ;
 
 -- -----------------------------------------------------
@@ -151,11 +151,11 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `restoran`.`SpisakZaNarudzbu` ;
 
 CREATE TABLE IF NOT EXISTS `restoran`.`SpisakZaNarudzbu` (
-  `Meni_Id` INT NOT NULL,
   `Narudzba_Id` INT(11) NOT NULL,
+  `Meni_Id` INT NOT NULL,
   `Kolicina` INT NULL,
   `Cijena` DECIMAL(10,2) NULL,
-  PRIMARY KEY (`Meni_Id`, `Narudzba_Id`),
+  PRIMARY KEY (`Narudzba_Id`, `Meni_Id`),
   INDEX `fk_Meni_has_Narudzba_Narudzba1_idx` (`Narudzba_Id` ASC),
   INDEX `fk_Meni_has_Narudzba_Meni1_idx` (`Meni_Id` ASC),
   CONSTRAINT `fk_Meni_has_Narudzba_Meni1`
@@ -180,9 +180,9 @@ CREATE TABLE IF NOT EXISTS `restoran`.`Rezervacija` (
   `Id` INT NOT NULL AUTO_INCREMENT,
   `Sto_Id` INT NOT NULL,
   `PodaciGosta` VARCHAR(256) NULL,
-  `Datum` DATE NULL,
-  `VrijemeOd` TIMESTAMP NULL,
-  `VrijemeDo` TIMESTAMP NULL,
+  `Datum` DATETIME NULL,
+  `VrijemeOd` DATETIME NULL,
+  `VrijemeDo` DATETIME NULL,
   `BrojOsoba` INT NULL,
   PRIMARY KEY (`Id`),
   INDEX `fk_Rezervacija_Sto1_idx` (`Sto_Id` ASC),
