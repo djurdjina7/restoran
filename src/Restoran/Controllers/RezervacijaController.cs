@@ -18,14 +18,21 @@ namespace Restoran.Controllers
             _context = context;
         }
 
-        // GET: Rezervacija
         public async Task<IActionResult> Index()
         {
-            var restoranContext = _context.Rezervacija.Include(r => r.Sto);
-            return View(await restoranContext.ToListAsync());
+            var restoranContext = await _context.Rezervacija.Include(r => r.Sto)
+                .Where(x => DateTime.Compare(x.Datum.Value, DateTime.Now) > 0
+                || (DateTime.Compare(x.Datum.Value.Date, DateTime.Now.Date) == 0
+                    && x.VrijemeDo.Value.TimeOfDay >= DateTime.Now.TimeOfDay)).ToListAsync();
+            return View(restoranContext);
         }
 
-        // GET: Rezervacija/Details/5
+        public async Task<IActionResult> AllReservations()
+        {
+            var restoranContext = await _context.Rezervacija.Include(r => r.Sto).ToListAsync();
+            return View(restoranContext);
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,32 +51,46 @@ namespace Restoran.Controllers
             return View(rezervacija);
         }
 
-        // GET: Rezervacija/Create
         public IActionResult Create()
         {
-            ViewData["StoId"] = new SelectList(_context.Sto, "Id", "Id");
+            var sto = _context.Sto
+                .Where(x => x.Dostupan == 1)
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+                });
+            ViewData["StoId"] = new SelectList(sto, "Id", "Podaci");
             return View();
         }
 
-        // POST: Rezervacija/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,StoId,PodaciGosta,Datum,VrijemeOd,VrijemeDo,BrojOsoba")] Rezervacija rezervacija)
         {
             if (ModelState.IsValid)
             {
+                var sto = await _context.Sto.FindAsync(rezervacija.StoId);
+                sto.Dostupan = 0;
+                _context.Update(sto);
+
                 _context.Add(rezervacija);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StoId"] = new SelectList(_context.Sto, "Id", "Id", rezervacija.StoId);
+            var stoList = _context.Sto
+                .Where(x => x.Dostupan == 1)
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+                });
+            ViewData["StoId"] = new SelectList(stoList, "Id", "Podaci", rezervacija.StoId);
             return View(rezervacija);
         }
 
-        // GET: Rezervacija/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? stariStoId)
         {
             if (id == null)
             {
@@ -81,16 +102,32 @@ namespace Restoran.Controllers
             {
                 return NotFound();
             }
-            ViewData["StoId"] = new SelectList(_context.Sto, "Id", "Id", rezervacija.StoId);
+            var stoList = _context.Sto
+               .Where(x => x.Id == stariStoId)
+               .Select(x => new
+               {
+                   Id = x.Id,
+                   Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+               }).ToList();
+
+            var stoList1 = _context.Sto
+               .Where(x => x.Dostupan == 1)
+               .Select(x => new
+               {
+                   Id = x.Id,
+                   Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+               }).ToList();
+
+            stoList.AddRange(stoList1);
+
+            ViewData["StoId"] = new SelectList(stoList, "Id", "Podaci");
+            ViewData["StariStoId"] = stariStoId;
             return View(rezervacija);
         }
 
-        // POST: Rezervacija/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StoId,PodaciGosta,Datum,VrijemeOd,VrijemeDo,BrojOsoba")] Rezervacija rezervacija)
+        public async Task<IActionResult> Edit(int id, int stariStoId, [Bind("Id,StoId,PodaciGosta,Datum,VrijemeOd,VrijemeDo,BrojOsoba")] Rezervacija rezervacija)
         {
             if (id != rezervacija.Id)
             {
@@ -101,7 +138,21 @@ namespace Restoran.Controllers
             {
                 try
                 {
-                    _context.Update(rezervacija);
+                    if(stariStoId == rezervacija.StoId)
+                    {
+                        _context.Update(rezervacija);
+                    }
+                    else
+                    {
+                        var sto = await _context.Sto.FindAsync(rezervacija.StoId);
+                        sto.Dostupan = 0;
+                        _context.Update(sto);
+
+                        var stariSto = await _context.Sto.FindAsync(stariStoId);
+                        sto.Dostupan = 1;
+                        _context.Update(stariSto);
+                    }
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -117,11 +168,17 @@ namespace Restoran.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StoId"] = new SelectList(_context.Sto, "Id", "Id", rezervacija.StoId);
+            var stoList = _context.Sto
+                .Where(x => x.Dostupan == 1)
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+                });
+            ViewData["StoId"] = new SelectList(stoList, "Id", "Podaci", rezervacija.StoId);
             return View(rezervacija);
         }
 
-        // GET: Rezervacija/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +197,6 @@ namespace Restoran.Controllers
             return View(rezervacija);
         }
 
-        // POST: Rezervacija/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
