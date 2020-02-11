@@ -18,13 +18,43 @@ namespace Restoran.Controllers
             _context = context;
         }
 
-        // GET: Sto
+        public async Task<IActionResult> Reserved()
+        {
+            var stolovi = _context.Sto
+                .Where(x => x.Dostupan == 0)
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+                });
+            ViewData["StoId"] = new SelectList(stolovi, "Id", "Podaci");
+
+            ViewBag.BrojZauzetihStolova = _context.Sto.Where(x => x.Dostupan == 0).Count();
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reserved([Bind("Id")] Sto sto)
+        {
+            if (ModelState.IsValid)
+            {
+                var stoId = sto.Id;
+                var stariSto = await  _context.Sto.FindAsync(stoId);
+                stariSto.Dostupan = 1;
+                _context.Sto.Update(stariSto);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Reserved", "Sto");
+            }
+            return View(sto);
+        }
+
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.Sto.ToListAsync());
         }
 
-        // GET: Sto/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,15 +72,11 @@ namespace Restoran.Controllers
             return View(sto);
         }
 
-        // GET: Sto/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Sto/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,BrojMjesta,BrojStola,Dostupan")] Sto sto)
@@ -64,7 +90,6 @@ namespace Restoran.Controllers
             return View(sto);
         }
 
-        // GET: Sto/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,9 +105,6 @@ namespace Restoran.Controllers
             return View(sto);
         }
 
-        // POST: Sto/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,BrojMjesta,BrojStola,Dostupan")] Sto sto)
@@ -115,7 +137,6 @@ namespace Restoran.Controllers
             return View(sto);
         }
 
-        // GET: Sto/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,7 +154,6 @@ namespace Restoran.Controllers
             return View(sto);
         }
 
-        // POST: Sto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
