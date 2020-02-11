@@ -18,14 +18,12 @@ namespace Restoran.Controllers
             _context = context;
         }
 
-        // GET: Narudzba
         public async Task<IActionResult> Index()
         {
             var restoranContext = _context.Narudzba.Include(n => n.Sto).Include(n => n.Zaposleni);
             return View(await restoranContext.ToListAsync());
         }
 
-        // GET: Narudzba/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,16 +43,35 @@ namespace Restoran.Controllers
             return View(narudzba);
         }
 
-        // GET: Narudzba/Create
         public IActionResult Create()
         {
-            var sto = _context.Sto
-                .Where(x => x.Dostupan == 1)
+            var rezervacija = _context.Rezervacija
+                .Where(x => DateTime.Compare(x.Datum.Value, DateTime.Now) > 0
+                    || (DateTime.Compare(x.Datum.Value.Date, DateTime.Now.Date) == 0 
+                        && x.VrijemeDo.Value.TimeOfDay >= DateTime.Now.TimeOfDay))
+                .Select(x => x.StoId)
+                .ToList();
+
+            var stoTest = _context.Sto.Where(x => x.Dostupan == 0 && rezervacija.Contains(x.Id)).ToList();
+
+            var test = _context.Rezervacija.Where(y => y.StoId == 5).Select(y => y.PodaciGosta).FirstOrDefault().ToString();
+
+            var sto = _context.Sto.Where(x => x.Dostupan == 1)
                 .Select(x => new
                 {
                     Id = x.Id,
-                    Podaci = x.BrojStola
-                });
+                    Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+                }).ToList();
+
+            var stoRezervacije = _context.Sto.Where(x => x.Dostupan == 0 && rezervacija.Contains(x.Id))
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Podaci = "REZERVACIJA: " + _context.Rezervacija.Where(y => y.StoId == x.Id).Select(y => y.PodaciGosta).FirstOrDefault().ToString()
+                }).ToList();
+
+            sto.AddRange(stoRezervacije);
+
             ViewData["StoId"] = new SelectList(sto, "Id", "Podaci");
             var zaposleni = _context.Zaposleni
                 .Select(x => new
@@ -66,9 +83,6 @@ namespace Restoran.Controllers
             return View();
         }
 
-        // POST: Narudzba/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ZaposleniId,StoId,VrijemeKreiranja,VrijemeZavrsetka,Cijena")] Narudzba narudzba)
@@ -78,14 +92,25 @@ namespace Restoran.Controllers
                 narudzba.Cijena = 0;
                 narudzba.VrijemeKreiranja = DateTime.Now;
                 _context.Add(narudzba);
+
                 var sto = await _context.Sto.FindAsync(narudzba.StoId);
                 sto.Dostupan = 0;
                 _context.Update(sto);
+
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Cart", "Spisakzanarudzbu", new { narudzbaId = narudzba.Id});
             }
-            ViewData["StoId"] = new SelectList(_context.Sto, "Id", "BrojStola", narudzba.StoId);
+
+            var stoList = _context.Sto
+                .Where(x => x.Dostupan == 1)
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Podaci = x.BrojStola.ToString() + " [" + x.BrojMjesta.ToString() + " mjesta]"
+                });
+            ViewData["StoId"] = new SelectList(stoList, "Id", "Podaci", narudzba.StoId);
+
             var zaposleni = _context.Zaposleni
                 .Select(x => new
                 {
@@ -93,10 +118,10 @@ namespace Restoran.Controllers
                     Podaci = x.Ime.ToString() + " " + x.Prezime.ToString()
                 });
             ViewData["ZaposleniId"] = new SelectList(zaposleni, "Id", "Podaci", narudzba.ZaposleniId);
+
             return View(narudzba);
         }
 
-        // GET: Narudzba/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -114,9 +139,6 @@ namespace Restoran.Controllers
             return View(narudzba);
         }
 
-        // POST: Narudzba/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ZaposleniId,StoId,VrijemeKreiranja,VrijemeZavrsetka,Cijena")] Narudzba narudzba)
@@ -151,7 +173,6 @@ namespace Restoran.Controllers
             return View(narudzba);
         }
 
-        // GET: Narudzba/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -171,7 +192,6 @@ namespace Restoran.Controllers
             return View(narudzba);
         }
 
-        // POST: Narudzba/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
