@@ -149,8 +149,10 @@ namespace Restoran.Controllers
                         _context.Update(sto);
 
                         var stariSto = await _context.Sto.FindAsync(stariStoId);
-                        sto.Dostupan = 1;
+                        stariSto.Dostupan = 1;
                         _context.Update(stariSto);
+
+                        _context.Update(rezervacija);
                     }
                     
                     await _context.SaveChangesAsync();

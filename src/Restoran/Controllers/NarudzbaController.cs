@@ -52,10 +52,6 @@ namespace Restoran.Controllers
                 .Select(x => x.StoId)
                 .ToList();
 
-            var stoTest = _context.Sto.Where(x => x.Dostupan == 0 && rezervacija.Contains(x.Id)).ToList();
-
-            var test = _context.Rezervacija.Where(y => y.StoId == 5).Select(y => y.PodaciGosta).FirstOrDefault().ToString();
-
             var sto = _context.Sto.Where(x => x.Dostupan == 1)
                 .Select(x => new
                 {
